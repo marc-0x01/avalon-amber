@@ -1,0 +1,6 @@
+# Repo documentation, not dotfiles - chezmoi doesn't ignore these by
+# default (only files/dirs starting with "." in the source root are
+# implicitly ignored), so without this they'd get applied straight
+# into $HOME as ~/README.md and ~/LICENSE.
+README.md
+LICENSE
