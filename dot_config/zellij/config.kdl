@@ -1,0 +1,178 @@
+// ============================================================
+// Zellij - terminal multiplexer.
+// Part of the "Avalon Amber" rice. Managed via chezmoi.
+// ============================================================
+
+// General defaults
+default_layout "default"
+default_mode "locked"
+default_shell "zsh"
+
+// Theme: "Avalon Amber" - matches kitty/waybar/starship
+theme "avalon-amber"
+
+// Mouse
+mouse_mode true
+
+// Clipboard
+copy_clipboard "primary"
+copy_command "wl-copy"
+copy_on_select true
+
+// No keybinds block declared - all zellij defaults apply, unmodified.
+// (An empty "keybinds {}" block here was found to trigger zellij's own
+// config auto-migration on every launch, expanding this file into a
+// 700+ line fully-enumerated version - so it's omitted entirely instead.)
+// TODO: Have sensible keybinding compatible with aerospace
+
+// User Interface
+simplified_ui false
+ui {
+    pane_frames {
+        hide_session_name true
+        rounded_corners false
+    }
+}
+
+// Plugins
+plugins {
+    compact-bar {
+        path "compact-bar"
+    }
+    startup {
+        path "layout/startup.kdl"
+    }
+    status-bar {
+        path "status-bar"
+    }
+    strider {
+        path "strider"
+    }
+    tab-bar {
+        path "tabbar"
+    }
+}
+
+// Avalon Amber theme - same 8-shade amber ramp used by kitty/waybar/starship,
+// mapped so "selected/highlighted" states reuse kitty's active-tab pairing
+// (background border-dim / text fg-highlight) instead of inventing a new look.
+themes {
+    avalon-amber {
+        text_unselected {
+            base 138 109 63
+            background 23 17 10
+            emphasis_0 232 185 105
+            emphasis_1 244 228 193
+            emphasis_2 201 151 58
+            emphasis_3 74 56 35
+        }
+        text_selected {
+            base 244 228 193
+            background 74 56 35
+            emphasis_0 232 185 105
+            emphasis_1 201 151 58
+            emphasis_2 138 109 63
+            emphasis_3 13 9 6
+        }
+        ribbon_unselected {
+            base 138 109 63
+            background 23 17 10
+            emphasis_0 232 185 105
+            emphasis_1 244 228 193
+            emphasis_2 201 151 58
+            emphasis_3 74 56 35
+        }
+        ribbon_selected {
+            base 13 9 6
+            background 201 151 58
+            emphasis_0 244 228 193
+            emphasis_1 23 17 10
+            emphasis_2 74 56 35
+            emphasis_3 232 185 105
+        }
+        table_title {
+            base 201 151 58
+            background 0
+            emphasis_0 232 185 105
+            emphasis_1 244 228 193
+            emphasis_2 138 109 63
+            emphasis_3 74 56 35
+        }
+        table_cell_selected {
+            base 244 228 193
+            background 74 56 35
+            emphasis_0 232 185 105
+            emphasis_1 201 151 58
+            emphasis_2 138 109 63
+            emphasis_3 13 9 6
+        }
+        table_cell_unselected {
+            base 138 109 63
+            background 23 17 10
+            emphasis_0 232 185 105
+            emphasis_1 244 228 193
+            emphasis_2 201 151 58
+            emphasis_3 74 56 35
+        }
+        list_selected {
+            base 244 228 193
+            background 74 56 35
+            emphasis_0 232 185 105
+            emphasis_1 201 151 58
+            emphasis_2 138 109 63
+            emphasis_3 13 9 6
+        }
+        list_unselected {
+            base 138 109 63
+            background 23 17 10
+            emphasis_0 232 185 105
+            emphasis_1 244 228 193
+            emphasis_2 201 151 58
+            emphasis_3 74 56 35
+        }
+        frame_selected {
+            base 201 151 58
+            background 0
+            emphasis_0 232 185 105
+            emphasis_1 244 228 193
+            emphasis_2 74 56 35
+            emphasis_3 0
+        }
+        frame_highlight {
+            base 232 185 105
+            background 0
+            emphasis_0 244 228 193
+            emphasis_1 232 185 105
+            emphasis_2 232 185 105
+            emphasis_3 232 185 105
+        }
+        exit_code_success {
+            base 201 151 58
+            background 0
+            emphasis_0 232 185 105
+            emphasis_1 13 9 6
+            emphasis_2 74 56 35
+            emphasis_3 138 109 63
+        }
+        exit_code_error {
+            base 244 228 193
+            background 0
+            emphasis_0 232 185 105
+            emphasis_1 0
+            emphasis_2 0
+            emphasis_3 0
+        }
+        multiplayer_user_colors {
+            player_1 201 151 58
+            player_2 232 185 105
+            player_3 138 109 63
+            player_4 244 228 193
+            player_5 74 56 35
+            player_6 201 151 58
+            player_7 232 185 105
+            player_8 138 109 63
+            player_9 244 228 193
+            player_10 74 56 35
+        }
+    }
+}

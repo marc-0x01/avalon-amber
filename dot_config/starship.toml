@@ -1,0 +1,57 @@
+# ============================================================
+# Starship - shell prompt.
+# Part of the "Avalon Amber" rice. Managed via chezmoi.
+# ============================================================
+
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$nodejs\
+$python\
+$rust\
+$golang\
+$cmd_duration\
+$line_break\
+$character"""
+
+palette = "avalon_amber"
+
+[palettes.avalon_amber]
+fg_dim = "#8a6d3f"
+fg_primary = "#c9973a"
+fg_bright = "#e8b969"
+fg_highlight = "#f4e4c1"
+
+[directory]
+style = "bold fg_primary"
+truncation_length = 3
+truncate_to_repo = true
+
+[git_branch]
+style = "fg_dim"
+
+[git_status]
+style = "fg_bright"
+
+[nodejs]
+style = "fg_dim"
+
+[python]
+style = "fg_dim"
+
+[rust]
+style = "fg_dim"
+
+[golang]
+style = "fg_dim"
+
+[cmd_duration]
+style = "fg_bright"
+min_time = 2000
+
+[character]
+success_symbol = "[❯](bold fg_bright)"
+error_symbol = "[❯](bold fg_highlight)"

@@ -1,0 +1,74 @@
+/* ============================================================
+   Wofi - app launcher styling.
+   Part of the "Avalon Amber" rice. Managed via chezmoi.
+   ============================================================ */
+
+* {
+	font-family: "3270 Nerd Font Mono", "Symbols Nerd Font";
+	font-size: 19px;
+}
+
+window {
+	background-color: #17110a;
+	border: 2px solid #c9973a;
+	border-radius: 0px;
+}
+
+#input {
+	margin: 8px;
+	padding: 8px;
+	background-color: #0d0906;
+	color: #c9973a;
+	caret-color: #e8b969;
+	border: 1px solid #4a3823;
+	border-radius: 0px;
+}
+
+#input:focus {
+	border: 1px solid #e8b969;
+}
+
+#input selection {
+	background-color: #c9973a;
+	color: #0d0906;
+}
+
+#inner-box {
+	margin: 4px;
+	background-color: transparent;
+}
+
+#outer-box {
+	margin: 4px;
+	background-color: transparent;
+}
+
+#scroll {
+	margin: 4px;
+}
+
+#text, label {
+	color: #8a6d3f;
+}
+
+#entry label {
+	font-size: 20px;
+}
+
+#entry {
+	padding: 6px;
+	border-radius: 0px;
+}
+
+#entry:selected {
+	background-color: #4a3823;
+}
+
+#entry:selected #text,
+#entry:selected label {
+	color: #f4e4c1;
+}
+
+#text:selected {
+	color: #f4e4c1;
+}

@@ -1,0 +1,63 @@
+# ============================================================
+# Git configuration. Managed via chezmoi.
+#
+# ACTIVE BLOCKER (verified): ~/.ssh/id_ed25519.pub and
+# ~/.ssh/allowed_signers do not exist yet, so [commit]/[tag] gpgsign below
+# makes every commit and tag fail right now with "Couldn't load public
+# key ... No such file or directory". Generate the SSH keypair, upload the
+# public key to GitHub as a Signing Key (separate from an Authentication
+# Key), and populate allowed_signers to fix.
+# ============================================================
+
+[user]
+	name = marc-0x01
+	email = marc@0x01.ooo
+	signingkey = ~/.ssh/id_ed25519.pub
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+
+[fetch]
+	prune = true
+
+[rerere]
+	enabled = true
+
+[diff]
+	algorithm = histogram
+
+[core]
+	editor = hx
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/allowed_signers
+
+[commit]
+	gpgsign = true
+
+[tag]
+	gpgsign = true
+
+[alias]
+	co = checkout
+	br = branch
+	st = status
+	cm = commit
+	last = log -1 HEAD
+	unstage = reset HEAD --
+	lg = log --graph --oneline --decorate --all
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

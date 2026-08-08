@@ -1,0 +1,141 @@
+// ============================================================
+// Waybar - bar layout and modules.
+// Part of the "Avalon Amber" rice. Managed via chezmoi.
+// ============================================================
+{
+	"layer": "top",
+	"position": "top",
+	"mod": "dock",
+	"height": 46,
+	"exclusive": true,
+	"passthrough": false,
+	"gtk-layer-shell": true,
+	"margin": "0px 0px 0px 0px",
+
+	"modules-left": ["hyprland/workspaces"],
+	"modules-center": ["image#spacebar"],
+	"modules-right": ["custom/cliphist", "network", "bluetooth", "battery", "memory", "cpu", "clock"],
+
+	"cpu": {
+		"interval": 10,
+		"format-alt": "<span font_desc='30px'>󰍛</span> {usage}%",
+		"format": "<span font_desc='20px'>{icon0}{icon1}{icon2}{icon3}</span>",
+		"format-icons": ["▏", "▎", "▍", "▌", "▋", "▊", "█", "█"]
+	},
+
+	"memory": {
+		"interval": 30,
+		"format": "<span font_desc='30px'>󰾆</span> {percentage}%",
+		"format-alt": "<span font_desc='30px'>󰾅</span> {used}GB",
+		"max-length": 10,
+		"tooltip": true,
+		"tooltip-format": " {used:0.1f}GB/{total:0.1f}GB"
+	},
+
+	"clock": {
+		"format": "{:%H:%M}",
+		"format-alt": "{:%H:%M  %b %Y}",
+		"tooltip-format": "{calendar}"
+	},
+
+	"hyprland/workspaces": {
+		"format": "{icon}",
+		"on-click": "activate",
+		"format-icons": {
+			"1": "一",
+			"2": "二",
+			"3": "三",
+			"4": "四",
+			"5": "五",
+			"6": "六",
+			"7": "七",
+			"8": "八",
+			"9": "九",
+			"10": "十"
+			// "urgent": "",
+			// "active": "",
+			// "default": ""
+		},
+		"sort-by-number": true
+	},
+
+	// Configured but not currently in any modules-left/center/right array,
+	// so this has no visible effect. Add "wlr/taskbar" to a modules list to enable.
+	"wlr/taskbar": {
+		"format": "{icon}",
+		"icon-size": 24,
+		"icon-theme": "Adwaita",
+		"tooltip-format": "{title}",
+		"on-click": "activate",
+		"on-click-middle": "close",
+		"ignore-list": ["kitty"],
+		"app_ids-mapping": {
+			"firefoxdeveloperedition": "firefox-developer-edition"
+		}
+	},
+
+	"battery": {
+		"format": "<span font_desc='30px'>{icon}</span>  {capacity}%",
+		"format-alt": "<span font_desc='30px'>{icon}</span>  {capacity}% - {time}",
+		"format-icons": ["", "", "", "", ""],
+		"format-time": "{H}h{M}m",
+		"format-charging": "<span font_desc='30px'></span>  <span font_desc='30px'>{icon}</span>  {capacity}% - {time}",
+		"format-full": "<span font_desc='30px'>{icon}</span>",
+		"interval": 60,
+		"states": {
+			"warning": 25,
+			"critical": 10
+		},
+		"tooltip": true,
+		"tooltip-format": "{capacity}% - {time} remaining"
+	},
+
+	"network": {
+		"interval": 5,
+		"format-wifi": "<span font_desc='30px'>{icon}</span>",
+		"format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+		"format-ethernet": "  {ifname}",
+		"format-disconnected": "  Disconnected",
+		"tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}",
+		"tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}",
+		"tooltip-format-disconnected": "Disconnected",
+		"on-click": "kitty -e nmtui"
+	},
+
+	"custom/cliphist": {
+		"format": "<span font_desc='30px'>󰆒</span>",
+		"on-click": "cliphist list | wofi --dmenu -p 'Clipboard' | cliphist decode | wl-copy",
+		"on-click-right": "cliphist wipe",
+		"tooltip": true,
+		"tooltip-format": "Clipboard history (click: open, right-click: clear)"
+	},
+
+	"bluetooth": {
+		"format": "<span font_desc='30px'>󰂯</span>",
+		"format-disabled": "<span font_desc='30px'>󰂲</span>",
+		"format-off": "<span font_desc='30px'>󰂲</span>",
+		"format-connected": "<span font_desc='30px'>󰂱</span>",
+		"tooltip-format": "{controller_alias} ({controller_address})\nPowered, no devices connected",
+		"tooltip-format-connected": "{controller_alias} ({controller_address})\n{device_enumerate}",
+		"tooltip-format-enumerate-connected": "{device_alias} ({device_address})",
+		"tooltip-format-disabled": "Bluetooth disabled",
+		"tooltip-format-off": "Bluetooth off",
+		"on-click": "kitty -e bluetuith"
+	},
+
+	// Same as wlr/taskbar above: configured but not in any modules-* array, inert.
+	"tray": {
+		"icon-size": 16,
+		"spacing": 8
+	},
+
+	// "custom/random" was a decorative animation fed by an asset that never
+	// made it onto this machine; disabled until a replacement script exists.
+
+	"image#spacebar": {
+		"format": " {} ",
+		"exec": "echo 'x'",
+		"interval": 86400 // once every day
+	}
+
+}

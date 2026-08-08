@@ -1,0 +1,16 @@
+# Avalon Amber - extends the built-in base16_terminal theme, which never
+# defines statusline mode colors (normal/insert/select), so Helix fell back
+# to its own hardcoded defaults for just that segment while the rest of the
+# bar used the terminal palette - hence the mismatch.
+inherits = "base16_terminal"
+
+"ui.statusline.normal" = { fg = "black", bg = "white", modifiers = ["bold"] }
+"ui.statusline.insert" = { fg = "black", bg = "light-yellow", modifiers = ["bold"] }
+"ui.statusline.select" = { fg = "black", bg = "light-gray", modifiers = ["bold"] }
+
+# base16_terminal uses "white" (ANSI 15, our palest cream - reads as plain
+# white at a glance) for these; "light-gray" (ANSI 7, our saturated amber)
+# reads as clearly amber instead, matching the menu.
+"ui.statusline" = { fg = "light-gray", bg = "black" }
+"ui.help" = { fg = "light-gray", bg = "black" }
+"ui.linenr.selected" = { fg = "light-gray", bg = "black", modifiers = ["bold"] }

@@ -1,0 +1,206 @@
+/* ============================================================
+   Waybar - bar styling.
+   Part of the "Avalon Amber" rice. Managed via chezmoi.
+   ============================================================ */
+
+@define-color bar-bg rgba(13, 9, 6, 0.92);
+
+@define-color main-color #c9973a;
+@define-color main-bg rgba(23, 17, 10, 0.6);
+@define-color dark #17110a; /* unused - no rule currently references this */
+
+@define-color tool-bg #17110a;
+@define-color tool-color #e8b969;
+@define-color tool-border #4a3823;
+
+@define-color wb-color #8a6d3f;
+
+/* unused - #workspaces button.active below hardcodes #e8b969 (the same
+   value as wb-act-color) instead of referencing these two variables. */
+@define-color wb-act-bg #4a3823;
+@define-color wb-act-color #e8b969;
+
+@define-color wb-hvr-bg rgba(201, 151, 58, 0.15);
+@define-color wb-hvr-color #c9973a;
+
+* {
+	border: none;
+	border-radius: 0px;
+	font-family: "3270 Nerd Font Mono", "Symbols Nerd Font", "Noto Sans CJK SC";
+	font-weight: bold;
+}
+
+.modules-right {
+	background: @main-bg;
+	padding-left: 16px;
+}
+
+window#waybar {
+	background: @bar-bg;
+	border-radius: 0px;
+	margin-top: 0px;
+
+}
+
+tooltip {
+	background: @tool-bg;
+	color: @tool-color;
+	border: 1px solid @tool-border;
+	border-radius: 0px;
+	padding: 16px;
+}
+
+tooltip label {
+	color: @tool-color;
+}
+
+#workspaces {
+	padding-left: 16px;
+	padding-right: 16px;
+	background: @main-bg;
+	border-radius: 0px;
+}
+
+#workspaces button {
+	font-size: 20px;
+	box-shadow: none;
+	text-shadow: none;
+	padding: 0px;
+	min-width: 32px;
+	color: @wb-color;
+	transition: all 0.2s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+	opacity: 0.9;
+}
+
+#workspaces button.active {
+	color: #e8b969;
+	transition: all 0.2s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+	opacity: 0.95;
+}
+
+#workspaces button:hover {
+	color: @wb-hvr-color;
+	transition: all 0.2s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+	opacity: 1;
+}
+
+#cpu,
+#battery,
+#memory,
+#clock,
+#window,
+#network,
+#bluetooth,
+#pulseaudio,
+#mpris,
+#custom-updates,
+#custom-wallchange,
+#custom-mode,
+#custom-cliphist,
+#custom-wbar,
+#custom-power,
+#tray {
+	color: @main-color;
+	opacity: 0.9;
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
+#window,
+#cpu,
+#battery,
+#memory,
+#network,
+#bluetooth,
+#pulseaudio,
+#mpris,
+#custom-updates,
+#custom-wallchange,
+#custom-mode,
+#custom-cliphist,
+#custom-wbar,
+#custom-power,
+#tray {
+	font-size: 18px;
+}
+
+#clock {
+	font-size: 22px;
+}
+
+/* Icon glyphs render from a fallback icon font (Symbols Nerd Font), whose
+   glyphs sit visually smaller than 3270 Nerd Font Mono's text at the same
+   font-size - each module's format string wraps its {icon} token in a Pango
+   <span font_desc="30px"> so the icon itself scales independently of any
+   accompanying percentage/text, which stays at the base size above. */
+
+#cpu {
+	/* No true bold face exists for 3270 Nerd Font Mono, so the global
+	   bold weight gets synthetically emboldened; these block-drawing
+	   bars are already full-width and bleed into neighboring modules
+	   when thickened. */
+	font-weight: normal;
+}
+
+#cpu:hover,
+#battery:hover,
+#memory:hover,
+#clock:hover,
+#window:hover,
+#network:hover,
+#bluetooth:hover,
+#pulseaudio:hover,
+#mpris:hover,
+#custom-updates:hover,
+#custom-wallchange:hover,
+#custom-mode:hover,
+#custom-cliphist:hover,
+#custom-wbar:hover,
+#custom-power:hover,
+#tray:hover {
+	background: @wb-hvr-bg;
+	color: @wb-hvr-color;
+	opacity: 1;
+}
+
+#battery.warning {
+	color: #e8b969;
+}
+
+#battery.critical {
+	color: #f4e4c1;
+}
+
+#network.disconnected {
+	color: #4a3823;
+}
+
+#bluetooth.connected {
+	color: #e8b969;
+}
+
+#bluetooth.disabled,
+#bluetooth.off {
+	color: #4a3823;
+}
+
+#window,
+#taskbar {
+	padding: 0px;
+}
+
+#custom-random {
+	color: @tool-color;
+	padding-right: 8px;
+}
+
+#image.spacebar {
+	/* background-image: url("~/.config/waybar/assets/spacebar.png"); no image installed yet */
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	min-width: 200px;
+	min-height: 36px;
+	margin-top: 4px;
+}
+

@@ -1,0 +1,61 @@
+# ============================================================
+# Helix - text editor.
+# Part of the "Avalon Amber" rice. Managed via chezmoi.
+# ============================================================
+
+theme = "avalon-amber"
+[editor]
+auto-info = false
+bufferline = "multiple"
+line-number = "absolute"
+middle-click-paste = false
+mouse = true
+popup-border = "all"
+shell = ["/sbin/zsh"]
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.indent-guides]
+character = "┆"
+render = true
+skip-levels = 0
+
+[editor.lsp]
+display-messages = true
+
+[editor.statusline]
+center = []
+left = [
+    "mode",
+    "spinner",
+    "separator",
+    "version-control",
+    "separator",
+    "file-name",
+    "read-only-indicator",
+    "file-modification-indicator",
+]
+right = [
+    "diagnostics",
+    "selections",
+    "register",
+    "position",
+    "separator",
+    "file-type",
+    "file-line-ending",
+    "file-encoding",
+]
+separator = " • "
+
+[editor.statusline.mode]
+insert = "I"
+normal = "N"
+select = "S"
+
+# Empty - scaffolding for custom keymap overrides, none defined yet.
+[keys.insert]
+
+[keys.normal]

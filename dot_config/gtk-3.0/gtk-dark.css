@@ -1,0 +1,26 @@
+/* Avalon Amber - recolors stock Adwaita via GTK3's named colors */
+
+@define-color theme_bg_color #17110a;
+@define-color theme_fg_color #c9973a;
+@define-color theme_base_color #0d0906;
+@define-color theme_text_color #c9973a;
+@define-color theme_selected_bg_color #e8b969;
+@define-color theme_selected_fg_color #0d0906;
+@define-color theme_tooltip_bg_color #221a10;
+@define-color theme_tooltip_fg_color #e8b969;
+
+@define-color borders #4a3823;
+@define-color unfocused_borders #4a3823;
+
+@define-color theme_unfocused_bg_color #17110a;
+@define-color theme_unfocused_fg_color #8a6d3f;
+@define-color theme_unfocused_base_color #0d0906;
+@define-color theme_unfocused_text_color #8a6d3f;
+@define-color theme_unfocused_selected_bg_color #4a3823;
+@define-color theme_unfocused_selected_fg_color #c9973a;
+
+@define-color insensitive_bg_color #17110a;
+@define-color insensitive_fg_color #4a3823;
+@define-color insensitive_base_color #0d0906;
+
+@define-color content_view_bg #0d0906;

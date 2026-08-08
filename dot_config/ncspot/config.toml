@@ -1,0 +1,8 @@
+default_keybindings = true
+gapless = true
+hide_display_names = true
+notify = false
+repeat = "playlist"
+shuffle = true
+use_nerdfont = true
+library_tabs = ["tracks", "playlists", "browse"]

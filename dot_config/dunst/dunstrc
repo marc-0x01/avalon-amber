@@ -1,0 +1,88 @@
+[global]
+    monitor = 0
+    follow = mouse
+
+    width = 350
+    height = (0, 300)
+    origin = top-right
+    offset = (16, 16)
+    scale = 0
+    notification_limit = 5
+
+    progress_bar = true
+    progress_bar_height = 10
+    progress_bar_frame_width = 1
+    progress_bar_min_width = 150
+    progress_bar_max_width = 300
+    progress_bar_corner_radius = 0
+    icon_corner_radius = 0
+
+    indicate_hidden = yes
+    transparency = 0
+    separator_height = 2
+    padding = 12
+    horizontal_padding = 12
+    text_icon_padding = 8
+    frame_width = 2
+    frame_color = "#c9973a"
+    separator_color = frame
+    sort = yes
+    idle_threshold = 120
+
+    font = 3270 Nerd Font Mono 14
+    line_height = 0
+    markup = full
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    show_age_threshold = 60
+    ellipsize = middle
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = yes
+
+    icon_position = left
+    min_icon_size = 32
+    max_icon_size = 64
+
+    sticky_history = yes
+    history_length = 20
+
+    dmenu = wofi --show dmenu -p dunst:
+    browser = qutebrowser
+
+    always_run_script = true
+    title = Dunst
+    class = Dunst
+
+    corner_radius = 0
+    ignore_dbusclose = false
+
+    force_xwayland = false
+    force_xinerama = false
+
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+[experimental]
+    per_monitor_dpi = false
+
+[urgency_low]
+    background = "#17110a"
+    foreground = "#8a6d3f"
+    frame_color = "#4a3823"
+    timeout = 5
+
+[urgency_normal]
+    background = "#17110a"
+    foreground = "#c9973a"
+    frame_color = "#c9973a"
+    timeout = 8
+
+[urgency_critical]
+    background = "#221a10"
+    foreground = "#f4e4c1"
+    frame_color = "#f4e4c1"
+    timeout = 0

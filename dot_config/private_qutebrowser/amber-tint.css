@@ -1,0 +1,5 @@
+/* Avalon Amber - gentle warm tint over web content (not a full invert,
+   to keep photos/logos/videos legible) */
+html {
+    filter: sepia(0.35) saturate(1.6) hue-rotate(-10deg) brightness(0.92) contrast(1.05);
+}
