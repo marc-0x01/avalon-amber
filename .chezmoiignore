@@ -4,3 +4,10 @@
 # into $HOME as ~/README.md and ~/LICENSE.
 README.md
 LICENSE
+
+# Backups of root-owned files (GRUB theme, ly login theme) that live
+# outside $HOME entirely. Not meant to be applied by chezmoi at all -
+# system-setup.sh reads these directly via `chezmoi source-path` and
+# installs them with sudo. Without this, chezmoi would try to apply
+# it straight into ~/root-overlay/..., which is nonsense.
+root-overlay

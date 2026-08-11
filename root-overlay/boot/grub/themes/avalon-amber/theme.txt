@@ -1,0 +1,37 @@
+# Avalon Amber GRUB theme
+title-text: ""
+desktop-image: "background.png"
+desktop-color: "#0d0906"
+terminal-font: "avalon_amber_16"
+
++ image {
+  id = "logo"
+  file = "skull.png"
+  top = 6%
+  left = 50%-110
+  width = 220
+}
+
++ boot_menu {
+  left = 30%
+  top = 45%
+  width = 40%
+  height = 35%
+  item_font = "avalon_amber_16"
+  item_color = "#8a6d3f"
+  selected_item_color = "#f4e4c1"
+  item_height = 32
+  item_padding = 8
+  item_spacing = 6
+}
+
++ label {
+  top = 85%
+  left = 30%
+  width = 40%
+  align = "center"
+  id = "__timeout__"
+  text = "Booting in %d seconds"
+  color = "#8a6d3f"
+  font = "avalon_amber_16"
+}
