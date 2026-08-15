@@ -46,25 +46,21 @@ button:hover {
     color: #f4e4c1;
 }
 
-/* login button (confirmed ReGreet CSS class) */
-button.suggested-action {
-    background-color: #c9973a;
-    color: #0d0906;
-    font-weight: bold;
-}
-
-button.suggested-action:hover {
-    background-color: #dcae4a;
-}
-
-/* reboot/poweroff buttons (confirmed ReGreet CSS class) */
+/* login/reboot/poweroff buttons (confirmed ReGreet CSS classes) -
+   Adwaita fills these solid amber/red by default, override explicitly
+   so every button on screen looks the same. */
+button.suggested-action,
 button.destructive-action {
-    color: #8a6d3f;
-    border-color: #4a3823;
+    background: transparent;
+    color: #c9973a;
+    border: 1px solid #4a3823;
+    font-weight: normal;
 }
 
+button.suggested-action:hover,
 button.destructive-action:hover {
-    color: #b6752a;
+    background-color: #4a3823;
+    color: #f4e4c1;
 }
 
 combobox, combobox button {
