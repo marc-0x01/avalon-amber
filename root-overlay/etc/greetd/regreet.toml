@@ -1,0 +1,31 @@
+skip_selection = false
+
+[background]
+path = "/etc/greetd/background.png"
+fit = "Cover"
+
+[env]
+
+[GTK]
+application_prefer_dark_theme = true
+cursor_theme_name = "Adwaita"
+cursor_blink = true
+font_name = "monospace 11"
+icon_theme_name = "Adwaita"
+theme_name = "Adwaita"
+
+[commands]
+# Void uses runit, not systemd - elogind (already enabled on this
+# machine) provides loginctl as the systemd-agnostic equivalent of
+# `systemctl reboot`/`systemctl poweroff`.
+reboot = ["loginctl", "reboot"]
+poweroff = ["loginctl", "poweroff"]
+
+[appearance]
+greeting_msg = "into-the-void"
+
+[widget.clock]
+format = "%a %H:%M"
+resolution = "1000ms"
+timezone = "Europe/Zurich"
+locale = "fr_CH"

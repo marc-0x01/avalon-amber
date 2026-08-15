@@ -16,8 +16,8 @@
 #       after them can succeed meaningfully on top of a broken base.
 #   4-10 degrade gracefully - each step logs a WARN/FAIL and moves on,
 #       since they're mostly independent of each other.
-#   The chezmoi clone happens BEFORE the GRUB/ly restore (steps 9-10
-#   read backup copies of those files out of the chezmoi repo itself),
+#   The chezmoi clone happens BEFORE the GRUB/greetd restore (steps
+#   9-10 read backup copies of those files out of the chezmoi repo itself),
 #   but the actual `chezmoi apply` - "install the chezmoi
 #   configuration" - is deliberately the LAST thing this script does.
 #
@@ -86,10 +86,10 @@ if (( assume_yes == 0 )); then
 This will, on this machine:
   - sync repodata and upgrade the base xbps system
   - add the black-hole.dev third-party repo + void-repo-nonfree
-  - install the ~99 packages this machine already has
+  - install the ~101 packages this machine already has
   - enable ~22 runit services
   - set locale/keymap/hostname, add supplementary groups, add a cron entry
-  - restore the GRUB boot theme and ly login theme (both root-owned,
+  - restore the GRUB boot theme and greetd login config (both root-owned,
     not managed by chezmoi)
   - clone/apply the avalon-amber chezmoi dotfiles from GitHub
 
@@ -134,9 +134,10 @@ fi
 # --- 2. third-party repo + nonfree repo ---
 log_info "-- third-party repo: black-hole.dev --"
 # NOT part of official Void repos - this machine's actual hyprland,
-# hyprlock, hypridle, and ly come from here instead, because upstream
+# hyprlock, and hypridle come from here instead, because upstream
 # Hyprland moves faster than Void's main repo tracks. Must exist
-# before the big package install below, or those four installs fail.
+# before the big package install below, or those installs fail.
+# (greetd/ReGreet/cage, unlike ly, ARE in Void's official repos.)
 blackhole_conf=/etc/xbps.d/10-repository-blackhole.conf
 blackhole_line="repository=https://mirror.black-hole.dev/x86_64/"
 if [[ -f "$blackhole_conf" ]] && grep -qxF "$blackhole_line" "$blackhole_conf"; then
@@ -167,23 +168,29 @@ fi
 # --- 3. full package set ---
 #
 # Every package this machine has EXPLICITLY installed (`xbps-query -m`),
-# captured live and hand-verified against this machine on 2026-08-12.
+# captured live and hand-verified against this machine on 2026-08-12,
+# updated 2026-08-16 for the ly -> greetd/ReGreet/cage swap (tuigreet
+# was tried first but its raw-VT keyboard input turned out unusable -
+# ReGreet, a real Wayland client run via the `cage` kiosk compositor,
+# doesn't have that problem and also isn't vulnerable to console/kernel
+# log spam painting over the login prompt, since it's graphical).
 # Everything else "ii" on this machine is an automatically-pulled
 # dependency - xbps resolves those on its own from each package's
 # declared deps, same as it always has, no need to list them here.
 packages=(
-    ImageMagick NetworkManager Waybar alsa-utils avahi banner base-devel
-    base-system bat bluetuith bluez brightnessctl chezmoi chromium chrony
-    cliphist cmake cowsay cups cups-filters cups-pdf dbus dcron difftastic
-    direnv dtrx dunst elogind fastfetch figlet figlet-fonts flatpak
-    font-unifont-bdf git github-cli grim grub-utils grub-x86_64-efi helix
-    htop hypridle hyprland hyprland-guiutils hyprlock inetutils intel-ucode
-    intel-video-accel jq kitty lm_sensors ly mesa-dri mesa-vulkan-intel
-    meson mosh ncspot nodejs noto-fonts-cjk noto-fonts-emoji noto-fonts-ttf
-    noto-fonts-ttf-extra pipewire pkg-config podman polkit polkit-gnome
-    python python3-adblock qt6-wayland qt6ct qutebrowser rbw rsync seatd
-    slurp smartmontools socklog-void starship swaybg tlp tree
-    void-repo-nonfree vulkan-loader w3m wev wget wireless-regdb wireplumber
+    ImageMagick NetworkManager ReGreet Waybar alsa-utils avahi banner
+    base-devel base-system bat bluetuith bluez brightnessctl cage chezmoi
+    chromium chrony cliphist cmake cowsay cups cups-filters cups-pdf dbus
+    dcron difftastic direnv dtrx dunst elogind fastfetch figlet
+    figlet-fonts flatpak font-unifont-bdf git github-cli greetd grim
+    grub-utils grub-x86_64-efi helix htop hypridle hyprland
+    hyprland-guiutils hyprlock inetutils intel-ucode intel-video-accel jq
+    kitty lm_sensors mesa-dri mesa-vulkan-intel meson mosh ncspot nodejs
+    noto-fonts-cjk noto-fonts-emoji noto-fonts-ttf noto-fonts-ttf-extra
+    pipewire pkg-config podman polkit polkit-gnome python python3-adblock
+    qt6-wayland qt6ct qutebrowser rbw rsync seatd slurp smartmontools
+    socklog-void starship swaybg tlp tree void-repo-nonfree
+    vulkan-loader w3m wev wget wireless-regdb wireplumber
     wl-clipboard wlogout wofi xdg-desktop-portal-gtk
     xdg-desktop-portal-hyprland xtools yazi zellij zsh zsh-autosuggestions
     zsh-syntax-highlighting
@@ -206,7 +213,7 @@ log_info "-- runit services --"
 services=(
     NetworkManager acpid agetty-tty1 agetty-tty3 agetty-tty4 agetty-tty5
     agetty-tty6 avahi-daemon bluetoothd chronyd cupsd dbus dcron dhcpcd
-    elogind ip6tables iptables ly nanoklogd socklog-unix tlp udevd
+    elogind greetd ip6tables iptables nanoklogd socklog-unix tlp udevd
 )
 for svc in "${services[@]}"; do
     if [[ -L "/var/service/$svc" && "$(readlink -f "/var/service/$svc")" == "/etc/sv/$svc" ]]; then
@@ -302,7 +309,7 @@ else
         log_ok "cloned avalon-amber into ${chezmoi_source_dir}."
         chezmoi_freshly_cloned=1
     else
-        log_fail "chezmoi init failed - can't proceed with the GRUB/ly restore or the final apply - aborting."
+        log_fail "chezmoi init failed - can't proceed with the GRUB/greetd restore or the final apply - aborting."
         exit 2
     fi
 fi
@@ -338,17 +345,36 @@ else
     log_warn "no GRUB theme found under ${overlay_dir} - skipping (repo may be out of sync with this script)."
 fi
 
-# --- 10. ly login theme restore ---
-log_info "-- ly login theme restore --"
-if [[ -f "${overlay_dir}/etc/ly/config.ini" ]]; then
-    sudo install -D -m 0644 "${overlay_dir}/etc/ly/config.ini" /etc/ly/config.ini
-    log_ok "ly config.ini restored."
-    # Deliberately NOT auto-restarting ly here: if this script is
-    # running from inside a session ly itself spawned, `sv restart ly`
-    # could kill that session out from under the person running it.
-    log_warn "ly won't pick this up until it restarts - reboot, or run 'sudo sv restart ly' from a DIFFERENT session/tty."
+# --- 10. greetd/ReGreet login config restore ---
+log_info "-- greetd/ReGreet login config restore --"
+# greetd's PAM stack includes pam_securetty.so, which refuses login on
+# any vt not listed in /etc/securetty. A fresh Void install's default
+# list may not include tty2 (the vt greetd's config.toml below targets,
+# matching where ly used to run) - ensure it idempotently rather than
+# assuming it's already there.
+if sudo grep -qx "tty2" /etc/securetty 2>/dev/null; then
+    log_ok "tty2 already present in /etc/securetty."
 else
-    log_warn "no ly config found under ${overlay_dir} - skipping."
+    printf 'tty2\n' | sudo tee -a /etc/securetty >/dev/null
+    log_ok "tty2 added to /etc/securetty (required by greetd's pam_securetty)."
+fi
+
+if [[ -f "${overlay_dir}/etc/greetd/config.toml" ]]; then
+    sudo install -D -m 0644 "${overlay_dir}/etc/greetd/config.toml" /etc/greetd/config.toml
+    sudo install -D -m 0644 "${overlay_dir}/etc/greetd/regreet.toml" /etc/greetd/regreet.toml
+    sudo install -D -m 0644 "${overlay_dir}/etc/greetd/regreet.css" /etc/greetd/regreet.css
+    sudo install -D -m 0644 "${overlay_dir}/etc/greetd/background.png" /etc/greetd/background.png
+    # ReGreet (running as _greeter) needs to write its own state/log
+    # dirs - the package doesn't create these itself.
+    sudo install -d -o _greeter -g _greeter /var/lib/regreet /var/log/regreet
+    log_ok "greetd + ReGreet config/theme restored."
+    # Deliberately NOT auto-restarting greetd here: if this script is
+    # running from inside a session greetd itself spawned, `sv restart
+    # greetd` could kill that session out from under the person
+    # running it.
+    log_warn "greetd won't pick this up until it restarts - reboot, or run 'sudo sv restart greetd' from a DIFFERENT session/tty."
+else
+    log_warn "no greetd config found under ${overlay_dir} - skipping."
 fi
 
 # --- 11. chezmoi: apply ---

@@ -1,0 +1,11 @@
+[terminal]
+# Same VT ly used to run its login prompt on.
+vt = 2
+
+[default_session]
+# -s: allow VT switching (so you never get locked to this VT if cage
+#     itself misbehaves). -mlast: use the last-connected monitor.
+#     -d: no client-side decorations. dbus-run-session prefix is
+#     upstream's documented fix for greeter startup delays.
+command = "dbus-run-session cage -s -mlast -d -- regreet"
+user = "_greeter"

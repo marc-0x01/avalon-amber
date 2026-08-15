@@ -1,0 +1,81 @@
+/* Avalon Amber theme for ReGreet - matches kitty/GRUB/helix palette. */
+
+window {
+    background-color: #0d0906;
+    color: #c9973a;
+}
+
+label {
+    color: #c9973a;
+}
+
+/* login frame + notification bar (confirmed ReGreet CSS class) */
+.background {
+    background-color: rgba(13, 9, 6, 0.85);
+    border: 1px solid #c9973a;
+    border-radius: 4px;
+    padding: 24px;
+}
+
+entry {
+    background-color: #17110a;
+    color: #f4e4c1;
+    border: 1px solid #4a3823;
+    border-radius: 2px;
+    caret-color: #c9973a;
+}
+
+entry:focus-within {
+    border-color: #c9973a;
+}
+
+selection {
+    background-color: #c9973a;
+    color: #0d0906;
+}
+
+button {
+    background-color: #17110a;
+    color: #c9973a;
+    border: 1px solid #4a3823;
+    border-radius: 2px;
+}
+
+button:hover {
+    background-color: #4a3823;
+    color: #f4e4c1;
+}
+
+/* login button (confirmed ReGreet CSS class) */
+button.suggested-action {
+    background-color: #c9973a;
+    color: #0d0906;
+    font-weight: bold;
+}
+
+button.suggested-action:hover {
+    background-color: #dcae4a;
+}
+
+/* reboot/poweroff buttons (confirmed ReGreet CSS class) */
+button.destructive-action {
+    color: #8a6d3f;
+    border-color: #4a3823;
+}
+
+button.destructive-action:hover {
+    color: #b6752a;
+}
+
+combobox, combobox button {
+    background-color: #17110a;
+    color: #c9973a;
+}
+
+#clock_frame label {
+    color: #f4e4c1;
+}
+
+#message_label, #notif_label {
+    color: #dcae4a;
+}
