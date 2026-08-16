@@ -28,7 +28,12 @@ COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="false"
 
 # Plugins
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting starship)
+# sudo: double-tap Esc to prepend "sudo " to the current/previous command.
+# chezmoi/gh/podman: completions + aliases matching tools already on this
+# machine. z: frecency-based "cd" directory jumping, pure zsh (no zoxide
+# binary needed). history-substring-search: type a fragment, ↑/↓ cycles
+# matching history entries.
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting starship sudo chezmoi gh podman z history-substring-search)
 
 ## Sourcing OMZ
 source $ZSH/oh-my-zsh.sh
@@ -36,8 +41,14 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 export PATH="$HOME/.local/bin:$PATH"
 export EDITOR='hx'
+export VISUAL="$EDITOR"
 
 # Aliases
+alias cls='clear'
+alias q='exit'
+alias cat='bat --paging=never'
+alias x='dtrx'
+
 # Re-fire udev "add" events for input devices - unsticks a stuck
 # trackpad/rmi4 device without needing a reboot.
 alias unstick-trackpad='sudo udevadm trigger --action=add --subsystem-match=input'
@@ -45,6 +56,17 @@ alias unstick-trackpad='sudo udevadm trigger --action=add --subsystem-match=inpu
 # Launch the zellij "devel" layout: claude-code left, hx top-right,
 # shell bottom-right.
 alias zellij-dev='zellij --new-session-with-layout devel'
+
+# Fun / novelty
+alias starwars='telnet towel.blinkenlights.nl'
+alias parrot='curl -s parrot.live'
+alias telehack='telnet telehack.com'
+alias mapscii='telnet mapscii.me'
+alias chucknorris='curl -s https://api.chucknorris.io/jokes/random | jq -r .value'
+alias wttr='curl -s wttr.in'                     # ASCII weather report
+alias dadjoke='curl -s -H "Accept: text/plain" https://icanhazdadjoke.com; echo'
+alias mystery='man woman'                        # "No entry for woman in the manual."
+alias matrix='L=${LINES:-$(tput lines)}; C=${COLUMNS:-$(tput cols)}; echo -e "\e[32m"; while :; do echo -en "\033[$((RANDOM%L));$((RANDOM%C))H\033[32m${RANDOM:0:1}"; done'
 
 # starship prompt is initialized by the oh-my-zsh "starship" plugin above
 

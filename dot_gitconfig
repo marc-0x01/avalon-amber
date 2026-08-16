@@ -31,6 +31,7 @@
 
 [diff]
 	algorithm = histogram
+	external = difft
 
 [core]
 	editor = hx
