@@ -37,6 +37,15 @@ source $ZSH/oh-my-zsh.sh
 export PATH="$HOME/.local/bin:$PATH"
 export EDITOR='hx'
 
+# Aliases
+# Re-fire udev "add" events for input devices - unsticks a stuck
+# trackpad/rmi4 device without needing a reboot.
+alias unstick-trackpad='sudo udevadm trigger --action=add --subsystem-match=input'
+
+# Launch the zellij "devel" layout: claude-code left, hx top-right,
+# shell bottom-right.
+alias zellij-dev='zellij --new-session-with-layout devel'
+
 # starship prompt is initialized by the oh-my-zsh "starship" plugin above
 
 # Welcome banner

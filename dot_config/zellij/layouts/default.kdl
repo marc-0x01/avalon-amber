@@ -1,0 +1,12 @@
+// ============================================================
+// Zellij - minimal default layout: just a shell, compact single
+// bottom bar (tab-bar + status-bar combined) instead of two bars.
+// Part of the "Avalon Amber" rice. Managed via chezmoi.
+// ============================================================
+
+layout {
+    pane
+    pane size=1 borderless=true {
+        plugin location="compact-bar"
+    }
+}

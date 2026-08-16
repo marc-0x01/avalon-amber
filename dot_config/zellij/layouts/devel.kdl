@@ -1,0 +1,19 @@
+// ============================================================
+// Zellij - "devel" developer layout: left claude-code (40%,
+// full height), right (60%) split hx (top 70%) / shell (bottom 30%).
+// Launch with the `zellij-dev` shell alias, or: zellij --layout devel
+// Part of the "Avalon Amber" rice. Managed via chezmoi.
+// ============================================================
+
+layout {
+    pane split_direction="vertical" {
+        pane command="claude" size="40%"
+        pane split_direction="horizontal" {
+            pane command="hx" size="70%"
+            pane size="30%"
+        }
+    }
+    pane size=1 borderless=true {
+        plugin location="compact-bar"
+    }
+}

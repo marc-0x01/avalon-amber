@@ -5,8 +5,17 @@
 
 // General defaults
 default_layout "default"
-default_mode "locked"
+// Sessions start unlocked (Normal mode): typing and the Ctrl+ shortcuts
+// below both work immediately - zellij only writes unbound keys straight
+// to the pane in Locked mode or whatever mode equals default_mode, so
+// default_mode has to be "normal" or every unbound key in Normal mode
+// becomes a silent no-op instead of being typed. Ctrl+g still exists
+// (unchanged zellij default) but now toggles INTO Locked on demand -
+// e.g. for a nested zellij session, or an app that needs one of the
+// Ctrl+ combos below sent through raw instead of intercepted.
+default_mode "normal"
 default_shell "zsh"
+show_startup_tips false
 
 // Theme: "Avalon Amber" - matches kitty/waybar/starship
 theme "avalon-amber"
@@ -19,11 +28,81 @@ copy_clipboard "primary"
 copy_command "wl-copy"
 copy_on_select true
 
-// No keybinds block declared - all zellij defaults apply, unmodified.
-// (An empty "keybinds {}" block here was found to trigger zellij's own
-// config auto-migration on every launch, expanding this file into a
-// 700+ line fully-enumerated version - so it's omitted entirely instead.)
-// TODO: Have sensible keybinding compatible with aerospace
+// Hyprland-mirrored keybinds (Ctrl instead of Hyprland's SUPER) - see
+// dot_config/hypr/binds.conf. This block has no clear-defaults=true, so
+// it only adds/overrides the keys listed below; every other zellij
+// default (pane/session/tmux mode internals, etc.) still works as-is.
+// All binds sit in shared_except "locked" so they're global - active
+// in every mode except Locked, firing without switching modes first,
+// same as Hyprland's always-on feel. Locked mode (opt-in via Ctrl+g,
+// see default_mode above) is the one place they don't fire, so it stays
+// a true raw passthrough when something needs it.
+//
+// Four keys collided with zellij's own global defaults; Hyprland won
+// each time, so the old zellij action lost its keybind entirely:
+//   Ctrl+h  was: enter "move" mode     now: MoveFocus left
+//   Ctrl+q  was: Quit (kill zellij)    now: CloseFocus      (~killactive)
+//             Quit itself moves to Ctrl+Delete, mirroring Hyprland's
+//             mainMod+delete (wlogout power menu).
+//   Ctrl+s  was: enter "scroll" mode   now: NextSwapLayout  (~togglesplit)
+//   Ctrl+t  was: enter "tab" mode      now: NewPane         (~open terminal)
+// Losing "scroll" mode also drops search-in-scrollback, and losing
+// "tab" mode drops its rename/break/sync/close sub-actions - none of
+// those have a keybind anymore (still reachable via the
+// session-manager/layout-manager plugins if needed).
+//
+// No zellij equivalent exists for Hyprland's app launcher, browser,
+// screen-lock, power-menu, or any hardware key (volume/brightness/
+// screenshot) - none of those are mirrored here.
+keybinds {
+    // Resize mode's only entry point moves from Ctrl+n to Ctrl+r
+    // (below), to match Hyprland's mainMod+R resize submap.
+    unbind "Ctrl n"
+
+    shared_except "locked" {
+        // Move focus - mainMod+hjkl
+        bind "Ctrl h" { MoveFocus "left"; }
+        bind "Ctrl j" { MoveFocus "down"; }
+        bind "Ctrl k" { MoveFocus "up"; }
+        bind "Ctrl l" { MoveFocus "right"; }
+
+        // Move pane - mainMod+SHIFT+hjkl
+        bind "Ctrl Shift h" { MovePane "left"; }
+        bind "Ctrl Shift j" { MovePane "down"; }
+        bind "Ctrl Shift k" { MovePane "up"; }
+        bind "Ctrl Shift l" { MovePane "right"; }
+
+        // Pane/window actions - mainMod+Q/W/F/T/E
+        bind "Ctrl q" { CloseFocus; }
+        bind "Ctrl w" { TogglePaneEmbedOrFloating; }
+        bind "Ctrl f" { ToggleFocusFullscreen; }
+        bind "Ctrl t" { NewPane; }
+        bind "Ctrl e" { Run "yazi"; }
+
+        // Quit zellij entirely - mainMod+delete (wlogout power menu)
+        bind "Ctrl Delete" { Quit; }
+
+        // Toggle/swap layout (dwindle togglesplit analog) - mainMod+S
+        bind "Ctrl s" { NextSwapLayout; }
+
+        // Resize submap - mainMod+R (zellij's own resize mode already
+        // works exactly like Hyprland's submap: hjkl to resize, Esc to
+        // exit back to normal)
+        bind "Ctrl r" { SwitchToMode "resize"; }
+
+        // Workspaces -> tabs - mainMod+[0-9]
+        bind "Ctrl 1" { GoToTab 1; }
+        bind "Ctrl 2" { GoToTab 2; }
+        bind "Ctrl 3" { GoToTab 3; }
+        bind "Ctrl 4" { GoToTab 4; }
+        bind "Ctrl 5" { GoToTab 5; }
+        bind "Ctrl 6" { GoToTab 6; }
+        bind "Ctrl 7" { GoToTab 7; }
+        bind "Ctrl 8" { GoToTab 8; }
+        bind "Ctrl 9" { GoToTab 9; }
+        bind "Ctrl 0" { GoToTab 10; }
+    }
+}
 
 // User Interface
 simplified_ui false
@@ -35,12 +114,12 @@ ui {
 }
 
 // Plugins
+// (No "startup" alias here - that's not how zellij plugins work; a
+// custom layout belongs in layouts/, see layouts/devel.kdl, launched
+// with the `zellij-dev` shell alias.)
 plugins {
     compact-bar {
         path "compact-bar"
-    }
-    startup {
-        path "layout/startup.kdl"
     }
     status-bar {
         path "status-bar"
