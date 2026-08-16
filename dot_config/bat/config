@@ -1,0 +1,12 @@
+# ============================================================
+# bat - syntax-highlighting cat replacement.
+# Part of the "Avalon Amber" rice. Managed via chezmoi.
+#
+# "ansi" renders through the terminal's own ANSI 16-color palette
+# instead of a hardcoded theme, so it automatically matches kitty's
+# Avalon Amber colors (color0-15 in kitty.conf) - same palette as
+# helix (which does the same trick via base16_terminal), with nothing
+# to keep in sync separately.
+# ============================================================
+
+--theme="ansi"
