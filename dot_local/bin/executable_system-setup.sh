@@ -14,10 +14,11 @@
 #   1-3 (base upgrade, repos, packages) are hard prerequisites - if
 #       any of these fail the script stops immediately, since nothing
 #       after them can succeed meaningfully on top of a broken base.
-#   4-10 degrade gracefully - each step logs a WARN/FAIL and moves on,
+#   4-13 degrade gracefully - each step logs a WARN/FAIL and moves on,
 #       since they're mostly independent of each other.
-#   The chezmoi clone happens BEFORE the GRUB/greetd restore (steps
-#   9-10 read backup copies of those files out of the chezmoi repo itself),
+#   The chezmoi clone happens BEFORE the GRUB/greetd/VS Code icon
+#   restore (steps 11-13 read backup copies of those files out of the
+#   chezmoi repo itself),
 #   but the actual `chezmoi apply` - "install the chezmoi
 #   configuration" - is deliberately the LAST thing this script does.
 #
@@ -86,11 +87,15 @@ if (( assume_yes == 0 )); then
 This will, on this machine:
   - sync repodata and upgrade the base xbps system
   - add the black-hole.dev third-party repo + void-repo-nonfree
-  - install the ~101 packages this machine already has
+  - install the ~103 packages this machine already has
+  - download the 3270 Nerd Font Mono files (not in any reasonably-sized
+    Void package)
+  - install VS Code extensions (material-icon-theme, claude-code, helix
+    emulation)
   - enable ~22 runit services
   - set locale/keymap/hostname, add supplementary groups, add a cron entry
-  - restore the GRUB boot theme and greetd login config (both root-owned,
-    not managed by chezmoi)
+  - restore the GRUB boot theme, greetd login config, and VS Code title
+    bar icon (all root-owned, not managed by chezmoi)
   - clone/apply the avalon-amber chezmoi dotfiles from GitHub
 
 All of the above is idempotent - safe to re-run on a machine that's
@@ -188,8 +193,8 @@ packages=(
     kitty lm_sensors mesa-dri mesa-vulkan-intel meson mosh ncspot nodejs
     noto-fonts-cjk noto-fonts-emoji noto-fonts-ttf noto-fonts-ttf-extra
     pipewire pkg-config podman polkit polkit-gnome python python3-adblock
-    qt6-wayland qt6ct qutebrowser rbw rsync seatd slurp smartmontools
-    socklog-void starship swaybg tlp tree void-repo-nonfree
+    qt6-wayland qt6ct qutebrowser rbw rsync seatd sl slurp smartmontools
+    socklog-void starship swaybg tlp tree void-repo-nonfree vscode
     vulkan-loader w3m wev wget wireless-regdb wireplumber
     wl-clipboard wlogout wofi xdg-desktop-portal-gtk
     xdg-desktop-portal-hyprland xtools yazi zellij zsh zsh-autosuggestions
@@ -204,7 +209,67 @@ else
     exit 2
 fi
 
-# --- 4. runit services ---
+# --- 4. 3270 Nerd Font Mono ---
+#
+# Not in any reasonably-sized Void package - the only match,
+# nerd-fonts-ttf, bundles every patched font family in the project
+# (7.4GB) just to get these 3 files. Fetched directly from the
+# nerd-fonts GitHub release instead, pinned to a specific version so a
+# future release can't silently change what lands here (bump
+# nerd_fonts_version by hand to update). The fc-cache -f at the end is
+# required, not optional: without it, dot_config/fontconfig/conf.d's
+# Regular-vs-Condensed disambiguation (same family name, three widths -
+# see that file's own comment) can silently apply to a stale cache and
+# get missed entirely, exactly like it did the first time this got set
+# up on this machine.
+log_info "-- 3270 Nerd Font Mono --"
+nerd_fonts_version="v3.5.1"
+fonts_dir="${HOME}/.local/share/fonts"
+if [[ -f "${fonts_dir}/3270NerdFontMono-Regular.ttf" ]]; then
+    log_ok "3270 Nerd Font Mono already present."
+else
+    font_tmp="$(mktemp -d)"
+    if curl -sL -o "${font_tmp}/3270.tar.xz" "https://github.com/ryanoasis/nerd-fonts/releases/download/${nerd_fonts_version}/3270.tar.xz" \
+        && tar -xJf "${font_tmp}/3270.tar.xz" -C "$font_tmp" \
+            3270NerdFontMono-Regular.ttf 3270NerdFontMono-Condensed.ttf 3270NerdFontMono-SemiCondensed.ttf; then
+        mkdir -p "$fonts_dir"
+        mv "${font_tmp}"/3270NerdFontMono-*.ttf "$fonts_dir/"
+        fc-cache -f "$fonts_dir" >/dev/null
+        log_ok "3270 Nerd Font Mono installed."
+    else
+        log_warn "failed to download/extract 3270 Nerd Font Mono - kitty/GTK/Qt/VS Code will fall back to a generic monospace font until this is retried."
+    fi
+    rm -rf "$font_tmp"
+fi
+
+# --- 5. VS Code extensions ---
+#
+# Void's "vscode" package actually builds Code - OSS (binary is
+# code-oss, not code; config lives in ~/.config/Code - OSS, not
+# ~/.config/Code - confirmed by checking product.json's nameShort
+# after install, since the package name doesn't tell you that).
+# `code-oss --install-extension` is itself idempotent (a no-op if
+# already installed), but the explicit check lets this loop log_ok
+# instead of reinstalling every time.
+log_info "-- VS Code (code-oss) extensions --"
+code_extensions=(
+    pkief.material-icon-theme
+    anthropic.claude-code
+    jasew.vscode-helix-emulation
+)
+for ext in "${code_extensions[@]}"; do
+    if code-oss --list-extensions | grep -qxF "$ext"; then
+        log_ok "extension already installed: $ext"
+    else
+        if code-oss --install-extension "$ext" >/dev/null; then
+            log_ok "extension installed: $ext"
+        else
+            log_warn "failed to install extension: $ext"
+        fi
+    fi
+done
+
+# --- 6. runit services ---
 #
 # None of these auto-enable from package installation alone on Void -
 # each needs an explicit symlink into /var/service. `ln -sf` is a
@@ -226,7 +291,7 @@ for svc in "${services[@]}"; do
     fi
 done
 
-# --- 5. locale, keymap, hostname ---
+# --- 7. locale, keymap, hostname ---
 log_info "-- locale, keymap, hostname --"
 
 hostname_target="into-the-void"   # this machine's identity - edit if reusing this script elsewhere
@@ -273,7 +338,7 @@ else
     log_ok "hostname set to $hostname_target."
 fi
 
-# --- 6. supplementary groups ---
+# --- 8. supplementary groups ---
 log_info "-- supplementary groups --"
 target_groups="wheel,audio,video,cdrom,optical,kvm,floppy,xbuilder,lpadmin,_seatd"
 if sudo usermod -aG "$target_groups" "$(id -un)"; then
@@ -283,7 +348,7 @@ else
     log_fail "usermod failed to set supplementary groups."
 fi
 
-# --- 7. cron: weekly periodic maintenance ---
+# --- 9. cron: weekly periodic maintenance ---
 log_info "-- cron: weekly periodic maintenance --"
 cron_line="0 4 * * 0 ${HOME}/.local/bin/system-periodic-maintenance.sh -y"
 if crontab -l 2>/dev/null | grep -qxF "$cron_line"; then
@@ -293,10 +358,10 @@ else
     log_ok "weekly maintenance cron entry added."
 fi
 
-# --- 8. chezmoi: clone (not applied yet) ---
+# --- 10. chezmoi: clone (not applied yet) ---
 #
 # Cloning here (rather than at the very end) is what makes the
-# root-overlay/ backup below available locally for steps 9-10. The
+# root-overlay/ backup below available locally for steps 11-13. The
 # actual dotfile *application* - "install the chezmoi configuration"
 # - stays the last thing this script does, per how this was asked for.
 log_info "-- chezmoi: cloning avalon-amber --"
@@ -316,7 +381,7 @@ fi
 
 overlay_dir="$(chezmoi source-path)/root-overlay"
 
-# --- 9. GRUB theme restore ---
+# --- 11. GRUB theme restore ---
 #
 # Root-owned, lives outside $HOME entirely, so chezmoi itself can't
 # manage it - it's backed up as a plain file tree under root-overlay/
@@ -345,7 +410,7 @@ else
     log_warn "no GRUB theme found under ${overlay_dir} - skipping (repo may be out of sync with this script)."
 fi
 
-# --- 10. greetd/ReGreet login config restore ---
+# --- 12. greetd/ReGreet login config restore ---
 log_info "-- greetd/ReGreet login config restore --"
 # greetd's PAM stack includes pam_securetty.so, which refuses login on
 # any vt not listed in /etc/securetty. A fresh Void install's default
@@ -377,7 +442,25 @@ else
     log_warn "no greetd config found under ${overlay_dir} - skipping."
 fi
 
-# --- 11. chezmoi: apply ---
+# --- 13. VS Code title bar icon ---
+#
+# code-oss's title-bar icon is a plain SVG file inside the xbps-owned
+# /usr/lib/code-oss tree, not something settings.json can restyle - so,
+# like GRUB/greetd above, it's backed up under root-overlay/ and
+# restored here by hand. This one, unlike GRUB/greetd, IS a file the
+# vscode package itself owns, so an xbps upgrade of vscode silently
+# reverts it - safe to re-run (that's exactly what this step is for).
+log_info "-- VS Code title bar icon --"
+code_icon_overlay="${overlay_dir}/usr/lib/code-oss/resources/app/out/media/code-icon.svg"
+code_icon_target=/usr/lib/code-oss/resources/app/out/media/code-icon.svg
+if [[ -f "$code_icon_overlay" ]]; then
+    sudo install -D -m 0644 "$code_icon_overlay" "$code_icon_target"
+    log_ok "VS Code title bar icon restored."
+else
+    log_warn "no VS Code icon found under ${overlay_dir} - skipping (repo may be out of sync with this script, or vscode isn't installed yet)."
+fi
+
+# --- 14. chezmoi: apply ---
 log_info "-- chezmoi: applying dotfiles --"
 if (( chezmoi_freshly_cloned == 1 )); then
     if chezmoi apply; then
