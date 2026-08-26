@@ -57,6 +57,16 @@ alias unstick-trackpad='sudo udevadm trigger --action=add --subsystem-match=inpu
 # shell bottom-right.
 alias zellij-dev='zellij --new-session-with-layout devel'
 
+# chezmoi shortcuts. The omz "chezmoi" plugin above only adds
+# completion, no aliases, so these are hand-rolled.
+alias cm='chezmoi'
+alias cma='chezmoi apply'
+alias cmd='chezmoi diff'
+alias cme='chezmoi edit'
+alias cms='chezmoi status'
+alias cmu='chezmoi update'
+alias cmcd='chezmoi cd'
+
 # Fun / novelty
 alias starwars='telnet towel.blinkenlights.nl'
 alias parrot='curl -s parrot.live'
