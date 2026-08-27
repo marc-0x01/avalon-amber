@@ -88,6 +88,9 @@ Most of `dot_zshrc`'s aliases are self-explanatory shortcuts or novelty (`starwa
   requiring an `ANTHROPIC_API_KEY` (`--bare` never reads OAuth), pulled from the
   `rbw`-managed Bitwarden vault at call time and billed against Console prepaid credit
   instead of the subscription.
+- **`unlock-vault`** / **`unlock-ssh`** — `rbw unlock` / `ssh-add ~/.ssh/id_ed25519`.
+  Both prompt for a passphrase interactively, so only run these directly in a real
+  terminal — `probe` needs the former, signed commits need the latter.
 
 ## Install
 

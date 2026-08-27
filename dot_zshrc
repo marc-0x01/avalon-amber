@@ -67,6 +67,12 @@ alias cms='chezmoi status'
 alias cmu='chezmoi update'
 alias cmcd='chezmoi cd'
 
+# Unlock shortcuts - both need a passphrase typed interactively, so
+# they only work run directly in a real terminal, never from a
+# non-interactive/piped context.
+alias unlock-vault='rbw unlock'
+alias unlock-ssh='ssh-add ~/.ssh/id_ed25519'
+
 # Stateless Claude Code invocations for Unix pipes - pure text-in/
 # text-out filters, no side effects either way:
 # --no-session-persistence writes no transcript to ~/.claude/projects
