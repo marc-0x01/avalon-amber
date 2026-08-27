@@ -35,7 +35,7 @@ running on an old amber monochrome monitor, not a modern flat-design showcase.
 | **Shell** | zsh + [starship](https://starship.rs) prompt |
 | **Terminal** | [kitty](https://sw.kovidgoyal.net/kitty/) |
 | **Multiplexer** | [zellij](https://zellij.dev) |
-| **Editor** | [Helix](https://helix-editor.com) |
+| **Editor** | [Helix](https://helix-editor.com); [VS Code](https://code.visualstudio.com) (Void's `vscode` package is actually Code - OSS) for a minimal, fully amber-themed IDE setup |
 | **Bar** | [waybar](https://github.com/Alexays/Waybar) |
 | **Launcher** | [wofi](https://sr.ht/~scoopta/wofi/) |
 | **Notifications** | [dunst](https://dunst-project.org) |
@@ -51,18 +51,43 @@ running on an old amber monochrome monitor, not a modern flat-design showcase.
 .
 ├── dot_config/          # -> ~/.config  (hypr, waybar, kitty, helix, dunst, ...)
 ├── dot_local/
-│   ├── bin/             # -> ~/.local/bin  — system-*.sh maintenance/diagnostic suite
+│   ├── bin/             # -> ~/.local/bin  — system-*.sh bootstrap/maintenance/diagnostic suite
 │   └── share/           # -> ~/.local/share  (flatpak overrides, etc.)
 ├── dot_gitconfig        # -> ~/.gitconfig — SSH commit signing, aliases
 ├── dot_zshrc            # -> ~/.zshrc
+├── root-overlay/        # root-owned files outside $HOME chezmoi can't apply directly
+│                        # (GRUB theme, greetd config, VS Code's title-bar icon) — backed
+│                        # up here, restored by system-setup.sh
 ├── Pictures/wallpaper/  # -> ~/Pictures/wallpaper  — the amber wallpaper itself
 └── LICENSE, README.md   # not applied to $HOME — chezmoi ignores these by convention
 ```
 
 The `dot_local/bin` scripts are a small, hand-rolled system-maintenance toolkit written
-for this machine specifically (`system-update.sh`, `system-health-check.sh`,
-`system-periodic-maintenance.sh`, sharing common logging/exit-code conventions from
-`system-lib.sh`) — real `set -euo pipefail` bash, not toy shell scripts.
+for this machine specifically — real `set -euo pipefail` bash, not toy shell scripts,
+sharing common logging/exit-code conventions from `system-lib.sh`:
+- `system-setup.sh` — bootstraps a fresh Void install back up to this exact machine:
+  packages, repos, services, locale/hostname/groups/cron, the `root-overlay/` restores
+  above, and finally `chezmoi apply` itself. Idempotent, safe to re-run.
+- `system-update.sh`, `system-health-check.sh`, `system-periodic-maintenance.sh` —
+  ongoing maintenance/diagnostics for an already-set-up machine.
+
+## Shell aliases
+
+Most of `dot_zshrc`'s aliases are self-explanatory shortcuts or novelty (`starwars`,
+`chucknorris`, `mapscii`, ...) — the ones worth calling out on their own:
+
+- **`cm`/`cma`/`cmd`/`cme`/`cms`/`cmu`/`cmcd`** — chezmoi shortcuts (`chezmoi`,
+  `apply`, `diff`, `edit`, `status`, `update`, `cd`). Omz's `chezmoi` plugin only adds
+  completion, not aliases, so these are hand-rolled.
+- **`ask`** / **`probe`** — stateless, tool-free Claude Code invocations for Unix
+  pipes (e.g. `git diff | ask "write a commit message"`). Both use
+  `--no-session-persistence` (no transcript saved, nothing resumable) and `--tools=""`
+  (no tool calls possible — pure text in, text out, no side effects). They differ only
+  in auth/cost: `ask` uses the OAuth login against the Pro subscription; `probe` adds
+  `--bare` (faster, fully isolated from hooks/CLAUDE.md/project context) at the cost of
+  requiring an `ANTHROPIC_API_KEY` (`--bare` never reads OAuth), pulled from the
+  `rbw`-managed Bitwarden vault at call time and billed against Console prepaid credit
+  instead of the subscription.
 
 ## Install
 

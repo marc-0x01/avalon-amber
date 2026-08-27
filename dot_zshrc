@@ -67,6 +67,31 @@ alias cms='chezmoi status'
 alias cmu='chezmoi update'
 alias cmcd='chezmoi cd'
 
+# Stateless Claude Code invocations for Unix pipes - pure text-in/
+# text-out filters, no side effects either way:
+# --no-session-persistence writes no transcript to ~/.claude/projects
+# (nothing to resume, nothing left behind); --tools="" disables tool
+# calls entirely (no file/shell access - it can only transform the
+# text you hand it, which is also what actually guarantees no memory
+# file could get written, regardless of --bare below). --tools="" must
+# use "=", not a space - as a space-separated arg the empty string
+# swallows the next word (your actual prompt) into the same variadic
+# flag instead of leaving it as the prompt.
+#
+# Two variants, two auth methods, two bills:
+#   ask   - OAuth login (`claude auth login`), billed to the Pro
+#           subscription. No --bare, since --bare only ever reads
+#           ANTHROPIC_API_KEY/apiKeyHelper and never OAuth.
+#   probe - --bare (skips hooks/LSP/plugin-sync/keychain/CLAUDE.md
+#           auto-discovery - faster, fully isolated context), billed
+#           per-token against Console prepaid credit instead. Needs an
+#           "anthropic-api-key" entry in the Bitwarden vault (its
+#           password field: `rbw add anthropic-api-key`, paste the key
+#           from console.anthropic.com as the first line) and the
+#           vault unlocked in this shell (`rbw unlock`) before use.
+alias ask='claude -p --no-session-persistence --tools=""'
+alias probe='ANTHROPIC_API_KEY=$(rbw get anthropic-api-key) claude -p --no-session-persistence --bare --tools=""'
+
 # Fun / novelty
 alias starwars='telnet towel.blinkenlights.nl'
 alias parrot='curl -s parrot.live'
